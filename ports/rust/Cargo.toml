@@ -1,0 +1,21 @@
+[package]
+name = "sf-smartwatch"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "SmartWatch for Rust: the coupling-density engine, a reporter and a command poller. Not published on crates.io."
+publish = false
+
+[lib]
+name = "smartwatch"
+path = "src/lib.rs"
+
+[[bin]]
+name = "conformance"
+path = "src/bin/conformance.rs"
+
+[[bin]]
+name = "interop"
+path = "src/bin/interop.rs"
+
+[dependencies]

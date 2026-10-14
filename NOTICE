@@ -1,0 +1,27 @@
+SmartWatch
+Copyright 2026 SmartTasks Lab
+
+Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+Names and affiliation
+---------------------
+
+SmartWatch is published by SmartTasksOrg. The only package names it is
+published under are those marked "registered": true in names.json.
+
+Prometheus is a trademark of its owner.
+Grafana is a trademark of its owner.
+Kubernetes is a trademark of its owner.
+Envoy is a trademark of its owner.
+All other names are the property of their respective owners. Their use here
+only says what the software connects to or works with; it does not imply
+affiliation, sponsorship or endorsement.
+
+Third-party code
+----------------
+
+The Python package has no runtime dependency. The optional extra "jwt"
+installs "cryptography" (Apache-2.0 or BSD-3-Clause) through pip. The ports use
+only their language's standard library; ports/rust/src/sha256.rs and the JSON
+readers of the Rust, Java and C# ports are shared with the SmartSwitch ports
+of the same authors.

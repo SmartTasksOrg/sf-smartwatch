@@ -1,0 +1,92 @@
+# CI: on every push to main and every pull request.
+#   test           Python tests on 3.10, 3.12 and 3.13, vectors up to date, the demo (gates merges)
+#   install-lines  no document names a package the maintainers do not hold (gates merges)
+#   ports          the shared vectors on all seven ports, and every port's reporter and command poller against the
+#                  Python monitor; shown, does not gate yet
+# Actions are pinned to commits (comment: tag, date read). Only GitHub-owned actions are used;
+# Rust, PHP, Ruby and .NET come from the runner image (a missing toolchain is reported as skipped).
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.10', '3.12', '3.13']
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1, read 2026-10-08
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0, read 2026-10-08
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install
+        run: python -m pip install -e ".[jwt]" "pytest==8.3.3"
+      - name: Tests
+        run: python -m pytest -q
+      - name: Vectors are what the generator writes
+        run: python spec/tools/make_vectors.py --check
+      - name: Demo and the bundled vectors
+        run: |
+          sf-smartwatch demo
+          sf-smartwatch vectors
+
+  install-lines:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1, read 2026-10-08
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0, read 2026-10-08
+        with:
+          python-version: '3.12'
+      - name: No document names a package the maintainers do not hold
+        run: python scripts/check_install_lines.py
+
+  ports:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    # not a required check yet: it has not run on GitHub before
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1, read 2026-10-08
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0, read 2026-10-08
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6  # v6.0.1, read 2026-10-08
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020  # v7.0.0, read 2026-10-08
+        with:
+          node-version: '22'
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16  # v6.5.0, read 2026-10-09
+        with:
+          go-version: '1.24'
+          cache: false
+      - name: Toolchains on the runner
+        run: |
+          for t in rustc cargo php ruby dotnet; do printf '%s: ' "$t"; ($t --version 2>/dev/null || echo missing) | head -1; done
+      - name: Install the Python package (the monitor for interop)
+        run: python -m pip install -e .
+      - name: Vectors, all engines
+        run: ports/conformance/run.sh
+      - name: Every port's reporter and poller against the Python monitor
+        run: ports/conformance/interop.sh

@@ -1,0 +1,40 @@
+{
+  "environment": "example",
+  "hash_seed": "default/smartwatch",
+  "hysteresis_permille": 100,
+  "late_windows": 2,
+  "levels": [
+    {
+      "min_density_micro": 2000000,
+      "name": "elevated"
+    },
+    {
+      "min_density_micro": 5000000,
+      "name": "high"
+    },
+    {
+      "min_density_micro": 10000000,
+      "name": "critical"
+    }
+  ],
+  "limits": {
+    "candidates": 1024,
+    "max_agents_exact": 50000,
+    "max_pairs_exact": 100000,
+    "top_k": 10
+  },
+  "max_empty_windows": 10,
+  "min_agents": 3,
+  "reset": {
+    "confirm_timeout_ms": 5000,
+    "cooldown_ms": 60000,
+    "hot_pair_min_count": 1,
+    "level": "critical",
+    "max_agents": 10,
+    "mode": "confirm",
+    "on_timeout": "cancel",
+    "sustain_ms": 5000
+  },
+  "schema": "smartwatch.policy/v1",
+  "window_ms": 1000
+}

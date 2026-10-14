@@ -1,0 +1,341 @@
+{
+ "description": "record = fields + seq, ts_ms, event, prev; hash = sha256(canonical(record without hash)); verify gives ok and the index of the first bad record (null when ok)",
+ "cases": [
+  {
+   "name": "a valid chain",
+   "records": [
+    {
+     "window": 1700000000,
+     "from": "normal",
+     "to": "critical",
+     "density_micro": 82000000,
+     "seq": 0,
+     "ts_ms": 1700000000000,
+     "event": "level",
+     "prev": "0000000000000000000000000000000000000000000000000000000000000000",
+     "hash": "835a6b93978d241208492ea0a623d0898bda8ab5c6f0a36e12d241dc28865290"
+    },
+    {
+     "reset_id": "r-1",
+     "agents": [
+      "a0",
+      "a1"
+     ],
+     "mode": "confirm",
+     "deadline_ms": 1700000005001,
+     "seq": 1,
+     "ts_ms": 1700000000001,
+     "event": "reset_proposed",
+     "prev": "835a6b93978d241208492ea0a623d0898bda8ab5c6f0a36e12d241dc28865290",
+     "hash": "cec55ac1cf625aea0ecb1b79a2d479231f669af44037d9ab2e57403cf3fd2b2c"
+    },
+    {
+     "reset_id": "r-1",
+     "decision": "confirm",
+     "by": "jwt:alice",
+     "note": "arr\u00eat \u00aburgent\u00bb \n2",
+     "seq": 2,
+     "ts_ms": 1700000000002,
+     "event": "reset_decision",
+     "prev": "cec55ac1cf625aea0ecb1b79a2d479231f669af44037d9ab2e57403cf3fd2b2c",
+     "hash": "9924f076329fdc23da04dd17a2a84c3cdaf4126eb6882828791b3a41b71bdd97"
+    },
+    {
+     "reset_id": "r-1",
+     "agent_id": "a0",
+     "via": "webhook",
+     "attempts": 2,
+     "ok": true,
+     "seq": 3,
+     "ts_ms": 1700000000003,
+     "event": "reset_delivered",
+     "prev": "9924f076329fdc23da04dd17a2a84c3cdaf4126eb6882828791b3a41b71bdd97",
+     "hash": "0271eadf7fd88f488d55801bad702566200691db7c3423facb50705cf36b37f4"
+    }
+   ],
+   "result": {
+    "ok": true,
+    "index": null
+   }
+  },
+  {
+   "name": "a field edited",
+   "records": [
+    {
+     "window": 1700000000,
+     "from": "normal",
+     "to": "critical",
+     "density_micro": 82000000,
+     "seq": 0,
+     "ts_ms": 1700000000000,
+     "event": "level",
+     "prev": "0000000000000000000000000000000000000000000000000000000000000000",
+     "hash": "835a6b93978d241208492ea0a623d0898bda8ab5c6f0a36e12d241dc28865290"
+    },
+    {
+     "reset_id": "r-1",
+     "agents": [
+      "a0",
+      "a1"
+     ],
+     "mode": "confirm",
+     "deadline_ms": 1700000005001,
+     "seq": 1,
+     "ts_ms": 1700000000001,
+     "event": "reset_proposed",
+     "prev": "835a6b93978d241208492ea0a623d0898bda8ab5c6f0a36e12d241dc28865290",
+     "hash": "cec55ac1cf625aea0ecb1b79a2d479231f669af44037d9ab2e57403cf3fd2b2c"
+    },
+    {
+     "reset_id": "r-1",
+     "decision": "confirm",
+     "by": "jwt:alice",
+     "note": "edited",
+     "seq": 2,
+     "ts_ms": 1700000000002,
+     "event": "reset_decision",
+     "prev": "cec55ac1cf625aea0ecb1b79a2d479231f669af44037d9ab2e57403cf3fd2b2c",
+     "hash": "9924f076329fdc23da04dd17a2a84c3cdaf4126eb6882828791b3a41b71bdd97"
+    },
+    {
+     "reset_id": "r-1",
+     "agent_id": "a0",
+     "via": "webhook",
+     "attempts": 2,
+     "ok": true,
+     "seq": 3,
+     "ts_ms": 1700000000003,
+     "event": "reset_delivered",
+     "prev": "9924f076329fdc23da04dd17a2a84c3cdaf4126eb6882828791b3a41b71bdd97",
+     "hash": "0271eadf7fd88f488d55801bad702566200691db7c3423facb50705cf36b37f4"
+    }
+   ],
+   "result": {
+    "ok": false,
+    "index": 2
+   }
+  },
+  {
+   "name": "a record removed",
+   "records": [
+    {
+     "window": 1700000000,
+     "from": "normal",
+     "to": "critical",
+     "density_micro": 82000000,
+     "seq": 0,
+     "ts_ms": 1700000000000,
+     "event": "level",
+     "prev": "0000000000000000000000000000000000000000000000000000000000000000",
+     "hash": "835a6b93978d241208492ea0a623d0898bda8ab5c6f0a36e12d241dc28865290"
+    },
+    {
+     "reset_id": "r-1",
+     "decision": "confirm",
+     "by": "jwt:alice",
+     "note": "arr\u00eat \u00aburgent\u00bb \n2",
+     "seq": 2,
+     "ts_ms": 1700000000002,
+     "event": "reset_decision",
+     "prev": "cec55ac1cf625aea0ecb1b79a2d479231f669af44037d9ab2e57403cf3fd2b2c",
+     "hash": "9924f076329fdc23da04dd17a2a84c3cdaf4126eb6882828791b3a41b71bdd97"
+    },
+    {
+     "reset_id": "r-1",
+     "agent_id": "a0",
+     "via": "webhook",
+     "attempts": 2,
+     "ok": true,
+     "seq": 3,
+     "ts_ms": 1700000000003,
+     "event": "reset_delivered",
+     "prev": "9924f076329fdc23da04dd17a2a84c3cdaf4126eb6882828791b3a41b71bdd97",
+     "hash": "0271eadf7fd88f488d55801bad702566200691db7c3423facb50705cf36b37f4"
+    }
+   ],
+   "result": {
+    "ok": false,
+    "index": 1
+   }
+  },
+  {
+   "name": "two records swapped",
+   "records": [
+    {
+     "window": 1700000000,
+     "from": "normal",
+     "to": "critical",
+     "density_micro": 82000000,
+     "seq": 0,
+     "ts_ms": 1700000000000,
+     "event": "level",
+     "prev": "0000000000000000000000000000000000000000000000000000000000000000",
+     "hash": "835a6b93978d241208492ea0a623d0898bda8ab5c6f0a36e12d241dc28865290"
+    },
+    {
+     "reset_id": "r-1",
+     "decision": "confirm",
+     "by": "jwt:alice",
+     "note": "arr\u00eat \u00aburgent\u00bb \n2",
+     "seq": 2,
+     "ts_ms": 1700000000002,
+     "event": "reset_decision",
+     "prev": "cec55ac1cf625aea0ecb1b79a2d479231f669af44037d9ab2e57403cf3fd2b2c",
+     "hash": "9924f076329fdc23da04dd17a2a84c3cdaf4126eb6882828791b3a41b71bdd97"
+    },
+    {
+     "reset_id": "r-1",
+     "agents": [
+      "a0",
+      "a1"
+     ],
+     "mode": "confirm",
+     "deadline_ms": 1700000005001,
+     "seq": 1,
+     "ts_ms": 1700000000001,
+     "event": "reset_proposed",
+     "prev": "835a6b93978d241208492ea0a623d0898bda8ab5c6f0a36e12d241dc28865290",
+     "hash": "cec55ac1cf625aea0ecb1b79a2d479231f669af44037d9ab2e57403cf3fd2b2c"
+    },
+    {
+     "reset_id": "r-1",
+     "agent_id": "a0",
+     "via": "webhook",
+     "attempts": 2,
+     "ok": true,
+     "seq": 3,
+     "ts_ms": 1700000000003,
+     "event": "reset_delivered",
+     "prev": "9924f076329fdc23da04dd17a2a84c3cdaf4126eb6882828791b3a41b71bdd97",
+     "hash": "0271eadf7fd88f488d55801bad702566200691db7c3423facb50705cf36b37f4"
+    }
+   ],
+   "result": {
+    "ok": false,
+    "index": 1
+   }
+  },
+  {
+   "name": "empty",
+   "records": [],
+   "result": {
+    "ok": true,
+    "index": null
+   }
+  },
+  {
+   "name": "seq true instead of 1 (hashes recomputed)",
+   "records": [
+    {
+     "window": 1700000000,
+     "from": "normal",
+     "to": "critical",
+     "density_micro": 82000000,
+     "seq": 0,
+     "ts_ms": 1700000000000,
+     "event": "level",
+     "prev": "0000000000000000000000000000000000000000000000000000000000000000",
+     "hash": "835a6b93978d241208492ea0a623d0898bda8ab5c6f0a36e12d241dc28865290"
+    },
+    {
+     "reset_id": "r-1",
+     "agents": [
+      "a0",
+      "a1"
+     ],
+     "mode": "confirm",
+     "deadline_ms": 1700000005001,
+     "seq": true,
+     "ts_ms": 1700000000001,
+     "event": "reset_proposed",
+     "prev": "835a6b93978d241208492ea0a623d0898bda8ab5c6f0a36e12d241dc28865290",
+     "hash": "022f84d3ca4a1a2b6830f0935ed294b1b03f27fd9078443e07b72ac123252136"
+    },
+    {
+     "reset_id": "r-1",
+     "decision": "confirm",
+     "by": "jwt:alice",
+     "note": "arr\u00eat \u00aburgent\u00bb \n2",
+     "seq": 2,
+     "ts_ms": 1700000000002,
+     "event": "reset_decision",
+     "prev": "022f84d3ca4a1a2b6830f0935ed294b1b03f27fd9078443e07b72ac123252136",
+     "hash": "c3905381b69acd661bd46a81524075ad0de38615772c4669c83dcccaf53cc295"
+    },
+    {
+     "reset_id": "r-1",
+     "agent_id": "a0",
+     "via": "webhook",
+     "attempts": 2,
+     "ok": true,
+     "seq": 3,
+     "ts_ms": 1700000000003,
+     "event": "reset_delivered",
+     "prev": "c3905381b69acd661bd46a81524075ad0de38615772c4669c83dcccaf53cc295",
+     "hash": "845802b1348137d342c64418bea33226f11d7925988f690375647631c7ce88e3"
+    }
+   ],
+   "result": {
+    "ok": false,
+    "index": 1
+   }
+  },
+  {
+   "name": "a fractional number",
+   "records": [
+    {
+     "window": 1700000000,
+     "from": "normal",
+     "to": "critical",
+     "density_micro": 82000000,
+     "seq": 0,
+     "ts_ms": 1700000000000,
+     "event": "level",
+     "prev": "0000000000000000000000000000000000000000000000000000000000000000",
+     "hash": "835a6b93978d241208492ea0a623d0898bda8ab5c6f0a36e12d241dc28865290"
+    },
+    {
+     "reset_id": "r-1",
+     "agents": [
+      "a0",
+      "a1"
+     ],
+     "mode": "confirm",
+     "deadline_ms": 1700000005001,
+     "seq": 1,
+     "ts_ms": 1700000000001,
+     "event": "reset_proposed",
+     "prev": "835a6b93978d241208492ea0a623d0898bda8ab5c6f0a36e12d241dc28865290",
+     "hash": "cec55ac1cf625aea0ecb1b79a2d479231f669af44037d9ab2e57403cf3fd2b2c"
+    },
+    {
+     "reset_id": "r-1",
+     "decision": "confirm",
+     "by": "jwt:alice",
+     "note": "arr\u00eat \u00aburgent\u00bb \n2",
+     "seq": 2,
+     "ts_ms": 1700000000002,
+     "event": "reset_decision",
+     "prev": "cec55ac1cf625aea0ecb1b79a2d479231f669af44037d9ab2e57403cf3fd2b2c",
+     "hash": "9924f076329fdc23da04dd17a2a84c3cdaf4126eb6882828791b3a41b71bdd97"
+    },
+    {
+     "reset_id": "r-1",
+     "agent_id": "a0",
+     "via": "webhook",
+     "attempts": 2.5,
+     "ok": true,
+     "seq": 3,
+     "ts_ms": 1700000000003,
+     "event": "reset_delivered",
+     "prev": "9924f076329fdc23da04dd17a2a84c3cdaf4126eb6882828791b3a41b71bdd97",
+     "hash": "0271eadf7fd88f488d55801bad702566200691db7c3423facb50705cf36b37f4"
+    }
+   ],
+   "result": {
+    "ok": false,
+    "index": 3
+   }
+  }
+ ]
+}

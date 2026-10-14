@@ -1,0 +1,360 @@
+openapi: 3.1.0
+info:
+  title: SmartWatch monitor
+  version: 0.1.0
+  description: |
+    Coupling-density monitor for multi-agent systems. Semantics: spec/SEMANTICS.md.
+    Credentials: the ingest token (reporters), the operator token (reading), and the reset credential
+    (a JWT with scope "reset:agent" when a JWT key is configured, otherwise the operator token).
+    Every error answer is {"error": text} with an optional "code" and closes the connection.
+  license:
+    name: Apache-2.0
+    identifier: Apache-2.0
+servers:
+  - url: http://127.0.0.1:8730
+security:
+  - bearer: []
+paths:
+  /healthz:
+    get:
+      security: []
+      summary: Liveness
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok: {type: boolean}
+                  version: {type: string}
+  /metrics:
+    get:
+      security: []
+      summary: Prometheus metrics (text exposition format)
+      responses:
+        '200':
+          description: metrics
+          content:
+            text/plain:
+              schema: {type: string}
+  /v1/events:
+    post:
+      summary: Report messages between agents (ingest token)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [events]
+              additionalProperties: false
+              properties:
+                events:
+                  type: array
+                  maxItems: 10000
+                  items: {$ref: '#/components/schemas/Event'}
+      responses:
+        '200': {$ref: '#/components/responses/IngestResult'}
+        '207': {$ref: '#/components/responses/IngestResult'}
+        '400': {$ref: '#/components/responses/Error'}
+        '401': {$ref: '#/components/responses/Error'}
+        '413': {$ref: '#/components/responses/Error'}
+        '429': {$ref: '#/components/responses/Error'}
+  /v1/agents/{agent_id}/commands:
+    get:
+      summary: Pending reset commands for one agent (ingest token); marks them delivered
+      parameters:
+        - $ref: '#/components/parameters/AgentId'
+      responses:
+        '200':
+          description: commands, oldest first
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  agent_id: {type: string}
+                  commands:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type: {type: string, const: reset}
+                        reset_id: {type: string}
+                        reason: {type: string, enum: [auto, confirmed, timeout, manual]}
+                        created_ms: {type: integer}
+        '400': {$ref: '#/components/responses/Error'}
+        '401': {$ref: '#/components/responses/Error'}
+  /v1/resets/{reset_id}/ack:
+    post:
+      summary: Acknowledge a reset once it is done (ingest token)
+      parameters:
+        - $ref: '#/components/parameters/ResetId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                agent_id: {type: string, description: when given, must be the reset's agent}
+      responses:
+        '200': {$ref: '#/components/responses/Reset'}
+        '404': {$ref: '#/components/responses/Error'}
+        '409': {$ref: '#/components/responses/Error'}
+  /v1/resets/{reset_id}:
+    get:
+      summary: One reset command (operator)
+      parameters:
+        - $ref: '#/components/parameters/ResetId'
+      responses:
+        '200': {$ref: '#/components/responses/Reset'}
+        '404': {$ref: '#/components/responses/Error'}
+  /v1/resets:
+    get:
+      summary: The latest 50 reset commands (operator)
+      responses:
+        '200':
+          description: resets
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  resets: {type: array, items: {$ref: '#/components/schemas/Reset'}}
+  /v1/state:
+    get:
+      summary: Level, engine counters, last window, policy (operator)
+      responses:
+        '200':
+          description: state
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  environment: {type: string}
+                  level: {type: string}
+                  reset_mode: {type: string}
+                  engine: {type: object}
+                  last_window: {oneOf: [{$ref: '#/components/schemas/Window'}, {type: 'null'}]}
+                  open_proposals: {type: integer}
+                  pending_resets: {type: integer}
+                  audit_head: {type: string}
+                  policy: {type: object}
+        '401': {$ref: '#/components/responses/Error'}
+  /v1/windows:
+    get:
+      summary: The latest closed windows (operator)
+      parameters:
+        - name: last
+          in: query
+          schema: {type: integer, minimum: 1, maximum: 600, default: 60}
+      responses:
+        '200':
+          description: windows, oldest first
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  windows: {type: array, items: {$ref: '#/components/schemas/Window'}}
+  /v1/proposals:
+    get:
+      summary: Reset proposals (operator)
+      parameters:
+        - name: status
+          in: query
+          schema: {type: string, enum: [open, confirmed, cancelled, timed-out-reset, timed-out-cancel]}
+      responses:
+        '200':
+          description: proposals
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  proposals: {type: array, items: {$ref: '#/components/schemas/Proposal'}}
+  /v1/proposals/{proposal_id}/{action}:
+    post:
+      summary: Confirm, cancel or escalate an open proposal (reset credential)
+      parameters:
+        - name: proposal_id
+          in: path
+          required: true
+          schema: {type: string}
+        - name: action
+          in: path
+          required: true
+          schema: {type: string, enum: [confirm, cancel, escalate]}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                note: {type: string, maxLength: 500}
+      responses:
+        '200':
+          description: the proposal after the decision
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Proposal'}
+        '401': {$ref: '#/components/responses/Error'}
+        '404': {$ref: '#/components/responses/Error'}
+        '409': {$ref: '#/components/responses/Error'}
+  /api/v1/agents/{agent_id}/reset:
+    post:
+      summary: Reset one agent by hand (reset credential); idempotent with Idempotency-Key
+      parameters:
+        - $ref: '#/components/parameters/AgentId'
+        - name: Idempotency-Key
+          in: header
+          schema: {type: string, minLength: 1, maxLength: 128}
+          description: the same key from the same caller returns the first reset instead of a new one
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason: {type: string, description: at most 500 UTF-8 bytes}
+      responses:
+        '202':
+          description: accepted; the command is queued for the agent
+          headers:
+            Location:
+              schema: {type: string}
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Reset'}
+        '400': {$ref: '#/components/responses/Error'}
+        '401': {$ref: '#/components/responses/Error'}
+        '422': {$ref: '#/components/responses/Error'}
+  /ui:
+    get:
+      summary: Read-only status page (HTTP Basic, the operator token as password)
+      security:
+        - basic: []
+      responses:
+        '200':
+          description: HTML
+          content:
+            text/html:
+              schema: {type: string}
+components:
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+    basic:
+      type: http
+      scheme: basic
+  parameters:
+    AgentId:
+      name: agent_id
+      in: path
+      required: true
+      description: '[A-Za-z0-9._:@/-]{1,128}; "/" percent-encoded as %2F'
+      schema: {type: string}
+    ResetId:
+      name: reset_id
+      in: path
+      required: true
+      schema: {type: string}
+  responses:
+    Error:
+      description: error
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [error]
+            properties:
+              error: {type: string}
+              code: {type: string}
+    IngestResult:
+      description: per-event result
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              accepted: {type: integer}
+              rejected:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    index: {type: integer}
+                    code: {type: string, enum: [WATCH-BAD-EVENT, WATCH-CLOCK-SKEW]}
+                    error: {type: string}
+    Reset:
+      description: a reset command
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/Reset'}
+  schemas:
+    Event:
+      type: object
+      required: [src, dst, ts_ms]
+      additionalProperties: false
+      properties:
+        src: {type: string, pattern: '^[A-Za-z0-9._:@/-]{1,128}$'}
+        dst: {type: string, pattern: '^[A-Za-z0-9._:@/-]{1,128}$'}
+        ts_ms: {type: integer, minimum: 0, maximum: 9007199254740991}
+        count: {type: integer, minimum: 1, maximum: 1000000000, default: 1}
+    Window:
+      type: object
+      properties:
+        kind: {type: string, const: window}
+        window: {type: integer}
+        start_ms: {type: integer}
+        messages: {type: integer}
+        self_messages: {type: integer}
+        agents: {type: integer}
+        pairs: {type: integer}
+        possible_pairs: {type: integer}
+        density_micro: {type: integer}
+        pair_ratio_micro: {type: integer}
+        exact: {type: boolean}
+        level: {type: string}
+        top:
+          type: array
+          items:
+            type: object
+            properties:
+              a: {type: string}
+              b: {type: string}
+              count: {type: integer}
+              exact: {type: boolean}
+    Proposal:
+      type: object
+      properties:
+        proposal_id: {type: string}
+        status: {type: string, enum: [open, confirmed, cancelled, timed-out-reset, timed-out-cancel]}
+        created_ms: {type: integer}
+        deadline_ms: {type: integer}
+        on_timeout: {type: string, enum: [reset, cancel]}
+        window: {type: integer}
+        level: {type: string}
+        density_micro: {type: integer}
+        sustained_ms: {type: integer}
+        agents: {type: array, items: {type: string}}
+        decided_by: {type: [string, 'null']}
+        decided_ms: {type: [integer, 'null']}
+        resets: {type: array, items: {type: string}}
+        escalated: {type: boolean}
+    Reset:
+      type: object
+      properties:
+        reset_id: {type: string}
+        agent_id: {type: string}
+        reason: {type: string, enum: [auto, confirmed, timeout, manual]}
+        by: {type: string}
+        created_ms: {type: integer}
+        status: {type: string, enum: [pending, delivered, acked]}
+        delivered_ms: {type: [integer, 'null']}
+        acked_ms: {type: [integer, 'null']}
+        replayed: {type: boolean}

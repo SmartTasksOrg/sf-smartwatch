@@ -1,0 +1,83 @@
+{
+ "description": "density_micro(messages, possible_pairs, window_ms) per SEMANTICS.md",
+ "cases": [
+  {
+   "messages": 0,
+   "possible_pairs": 0,
+   "window_ms": 1000,
+   "density_micro": 0
+  },
+  {
+   "messages": 10,
+   "possible_pairs": 0,
+   "window_ms": 1000,
+   "density_micro": 0
+  },
+  {
+   "messages": 20,
+   "possible_pairs": 10,
+   "window_ms": 1000,
+   "density_micro": 2000000
+  },
+  {
+   "messages": 1,
+   "possible_pairs": 3,
+   "window_ms": 1000,
+   "density_micro": 333333
+  },
+  {
+   "messages": 2,
+   "possible_pairs": 3,
+   "window_ms": 1000,
+   "density_micro": 666666
+  },
+  {
+   "messages": 1000,
+   "possible_pairs": 45,
+   "window_ms": 1000,
+   "density_micro": 22222222
+  },
+  {
+   "messages": 7,
+   "possible_pairs": 3,
+   "window_ms": 300,
+   "density_micro": 7777777
+  },
+  {
+   "messages": 123456789,
+   "possible_pairs": 199990000,
+   "window_ms": 1000,
+   "density_micro": 617314
+  },
+  {
+   "messages": 1000000000000,
+   "possible_pairs": 49995000,
+   "window_ms": 60000,
+   "density_micro": 333366670
+  },
+  {
+   "messages": 9007199254740991,
+   "possible_pairs": 1,
+   "window_ms": 100,
+   "density_micro": 9007199254740991
+  },
+  {
+   "messages": 1,
+   "possible_pairs": 9007199254740991,
+   "window_ms": 60000,
+   "density_micro": 0
+  },
+  {
+   "messages": 999999,
+   "possible_pairs": 1000000,
+   "window_ms": 1000,
+   "density_micro": 999999
+  },
+  {
+   "messages": 3,
+   "possible_pairs": 1,
+   "window_ms": 3,
+   "density_micro": 1000000000
+  }
+ ]
+}

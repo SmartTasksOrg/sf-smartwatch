@@ -1,0 +1,50 @@
+# The SmartWatch monitor with Prometheus and Grafana.
+#   1. cp deploy/.env.example deploy/.env           # long random tokens in deploy/.env (never commit it)
+#   2. cp deploy/policy.example.json deploy/policy.json and calibrate it (docs/calibration.md)
+#   3. docker compose -f deploy/docker-compose.yml --env-file deploy/.env up -d --build
+# Monitor: http://127.0.0.1:8730   Prometheus: http://127.0.0.1:9090   Grafana: http://127.0.0.1:3000
+# Every port is bound to 127.0.0.1; put a TLS proxy in front before reporters or people use it.
+# Image versions are tags; pin them by digest for production.
+name: smartwatch
+
+services:
+  smartwatch:
+    build: { context: .., dockerfile: Dockerfile }
+    environment:
+      SMARTWATCH_INGEST_TOKEN: ${SMARTWATCH_INGEST_TOKEN:?set SMARTWATCH_INGEST_TOKEN in deploy/.env}
+      SMARTWATCH_OPERATOR_TOKEN: ${SMARTWATCH_OPERATOR_TOKEN:?set SMARTWATCH_OPERATOR_TOKEN in deploy/.env}
+      SMARTWATCH_JWT_HS256_SECRET: ${SMARTWATCH_JWT_HS256_SECRET:-}
+      SMARTWATCH_JWT_ISSUER: ${SMARTWATCH_JWT_ISSUER:-}
+      SMARTWATCH_JWT_AUDIENCE: ${SMARTWATCH_JWT_AUDIENCE:-}
+      SMARTWATCH_OPERATOR_ALLOW: ${SMARTWATCH_OPERATOR_ALLOW:-}
+      SMARTWATCH_ALERT_WEBHOOK: ${SMARTWATCH_ALERT_WEBHOOK:-}
+      SMARTWATCH_RESET_WEBHOOK: ${SMARTWATCH_RESET_WEBHOOK:-}
+      SMARTWATCH_ESCALATION_WEBHOOK: ${SMARTWATCH_ESCALATION_WEBHOOK:-}
+      SMARTWATCH_WEBHOOK_SECRET: ${SMARTWATCH_WEBHOOK_SECRET:-}
+    volumes:
+      - ./policy.json:/config/policy.json:ro
+      - watch-audit:/data
+    ports: ["127.0.0.1:8730:8730"]
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:v2.53.0
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus/alerts.yml:/etc/prometheus/alerts.yml:ro
+    ports: ["127.0.0.1:9090:9090"]
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:11.1.0
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?set GRAFANA_ADMIN_PASSWORD in deploy/.env}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports: ["127.0.0.1:3000:3000"]
+    restart: unless-stopped
+
+volumes:
+  watch-audit:

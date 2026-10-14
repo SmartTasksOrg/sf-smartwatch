@@ -1,0 +1,47 @@
+# Alert rules for SmartWatch. Route them with your Alertmanager (chat, paging, email).
+groups:
+  - name: smartwatch
+    rules:
+      - alert: SmartWatchDown
+        expr: up{job="smartwatch"} == 0
+        for: 1m
+        labels: {severity: critical}
+        annotations: {summary: "The SmartWatch monitor is not answering: coupling is not being watched."}
+      - alert: SmartWatchElevated
+        expr: smartwatch_level >= 1
+        for: 1m
+        labels: {severity: warning}
+        annotations: {summary: "Coupling density has been above the first level for a minute (level {{ $value }})."}
+      - alert: SmartWatchResetLevel
+        expr: sum(increase(smartwatch_resets_total[5m])) > 0
+        labels: {severity: critical}
+        annotations: {summary: "SmartWatch issued reset commands in the last 5 minutes."}
+      - alert: SmartWatchProposalOpen
+        expr: sum(increase(smartwatch_proposals_total{outcome="created"}[2m])) > 0
+        labels: {severity: critical}
+        annotations: {summary: "A reset proposal is waiting for a decision (see /ui or sf-smartwatch proposals)."}
+      - alert: SmartWatchSketchMode
+        expr: smartwatch_sketch_mode == 1
+        for: 10m
+        labels: {severity: info}
+        annotations: {summary: "Windows are over the exact limits; counts are estimates. Raise limits.max_pairs_exact or accept it."}
+      - alert: SmartWatchWebhookFailing
+        expr: sum(increase(smartwatch_webhooks_total{result=~"failed|dropped"}[10m])) > 0
+        labels: {severity: warning}
+        annotations: {summary: "Webhooks were given up or dropped."}
+      - alert: SmartWatchNoTraffic
+        expr: sum(increase(smartwatch_events_total{result="accepted"}[5m])) == 0
+        for: 5m
+        labels: {severity: warning}
+        annotations: {summary: "No events for 5 minutes: the reporters may be down."}
+      - alert: SmartWatchLateMessages
+        expr: increase(smartwatch_late_messages[10m]) > 1000
+        labels: {severity: info}
+        annotations: {summary: "Many messages arrived after their window closed: check reporter clocks or raise late_windows."}
+      # A hot pair, independent of the window's density (which invented idle agents can dilute; see
+      # docs/threat-model.md). Set the count to one your agents never reach in one window, then enable.
+      # - alert: SmartWatchHotPair
+      #   expr: max(smartwatch_pair_messages) > 1000
+      #   for: 30s
+      #   labels: {severity: warning}
+      #   annotations: {summary: "One pair exchanged more than 1000 messages in a window."}

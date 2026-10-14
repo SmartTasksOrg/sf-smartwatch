@@ -1,0 +1,1315 @@
+{
+ "description": "validate the policy: ok, or the code",
+ "cases": [
+  {
+   "name": "the default policy",
+   "policy": {
+    "schema": "smartwatch.policy/v1",
+    "environment": "default",
+    "window_ms": 1000,
+    "late_windows": 2,
+    "max_empty_windows": 10,
+    "min_agents": 3,
+    "levels": [
+     {
+      "name": "elevated",
+      "min_density_micro": 2000000
+     },
+     {
+      "name": "high",
+      "min_density_micro": 5000000
+     },
+     {
+      "name": "critical",
+      "min_density_micro": 10000000
+     }
+    ],
+    "hysteresis_permille": 100,
+    "reset": {
+     "level": "critical",
+     "sustain_ms": 5000,
+     "mode": "confirm",
+     "confirm_timeout_ms": 5000,
+     "on_timeout": "reset",
+     "cooldown_ms": 60000,
+     "max_agents": 10,
+     "hot_pair_min_count": 1
+    },
+    "limits": {
+     "max_pairs_exact": 100000,
+     "max_agents_exact": 50000,
+     "top_k": 10,
+     "candidates": 1024
+    },
+    "hash_seed": "default/smartwatch"
+   },
+   "ok": true
+  },
+  {
+   "name": "one level",
+   "policy": {
+    "schema": "smartwatch.policy/v1",
+    "environment": "default",
+    "window_ms": 1000,
+    "late_windows": 2,
+    "max_empty_windows": 10,
+    "min_agents": 3,
+    "levels": [
+     {
+      "name": "hot",
+      "min_density_micro": 5
+     }
+    ],
+    "hysteresis_permille": 100,
+    "reset": {
+     "level": "hot",
+     "sustain_ms": 5000,
+     "mode": "confirm",
+     "confirm_timeout_ms": 5000,
+     "on_timeout": "reset",
+     "cooldown_ms": 60000,
+     "max_agents": 10,
+     "hot_pair_min_count": 1
+    },
+    "limits": {
+     "max_pairs_exact": 100000,
+     "max_agents_exact": 50000,
+     "top_k": 10,
+     "candidates": 1024
+    },
+    "hash_seed": "default/smartwatch"
+   },
+   "ok": true
+  },
+  {
+   "name": "missing field",
+   "policy": {
+    "schema": "smartwatch.policy/v1",
+    "environment": "default",
+    "window_ms": 1000,
+    "late_windows": 2,
+    "max_empty_windows": 10,
+    "min_agents": 3,
+    "levels": [
+     {
+      "name": "elevated",
+      "min_density_micro": 2000000
+     },
+     {
+      "name": "high",
+      "min_density_micro": 5000000
+     },
+     {
+      "name": "critical",
+      "min_density_micro": 10000000
+     }
+    ],
+    "hysteresis_permille": 100,
+    "reset": {
+     "level": "critical",
+     "sustain_ms": 5000,
+     "mode": "confirm",
+     "confirm_timeout_ms": 5000,
+     "on_timeout": "reset",
+     "cooldown_ms": 60000,
+     "max_agents": 10,
+     "hot_pair_min_count": 1
+    },
+    "hash_seed": "default/smartwatch"
+   },
+   "ok": false,
+   "code": "WATCH-BAD-POLICY"
+  },
+  {
+   "name": "extra field",
+   "policy": {
+    "schema": "smartwatch.policy/v1",
+    "environment": "default",
+    "window_ms": 1000,
+    "late_windows": 2,
+    "max_empty_windows": 10,
+    "min_agents": 3,
+    "levels": [
+     {
+      "name": "elevated",
+      "min_density_micro": 2000000
+     },
+     {
+      "name": "high",
+      "min_density_micro": 5000000
+     },
+     {
+      "name": "critical",
+      "min_density_micro": 10000000
+     }
+    ],
+    "hysteresis_permille": 100,
+    "reset": {
+     "level": "critical",
+     "sustain_ms": 5000,
+     "mode": "confirm",
+     "confirm_timeout_ms": 5000,
+     "on_timeout": "reset",
+     "cooldown_ms": 60000,
+     "max_agents": 10,
+     "hot_pair_min_count": 1
+    },
+    "limits": {
+     "max_pairs_exact": 100000,
+     "max_agents_exact": 50000,
+     "top_k": 10,
+     "candidates": 1024
+    },
+    "hash_seed": "default/smartwatch",
+    "extra": 1
+   },
+   "ok": false,
+   "code": "WATCH-BAD-POLICY"
+  },
+  {
+   "name": "schema wrong",
+   "policy": {
+    "schema": "smartwatch.policy/v2",
+    "environment": "default",
+    "window_ms": 1000,
+    "late_windows": 2,
+    "max_empty_windows": 10,
+    "min_agents": 3,
+    "levels": [
+     {
+      "name": "elevated",
+      "min_density_micro": 2000000
+     },
+     {
+      "name": "high",
+      "min_density_micro": 5000000
+     },
+     {
+      "name": "critical",
+      "min_density_micro": 10000000
+     }
+    ],
+    "hysteresis_permille": 100,
+    "reset": {
+     "level": "critical",
+     "sustain_ms": 5000,
+     "mode": "confirm",
+     "confirm_timeout_ms": 5000,
+     "on_timeout": "reset",
+     "cooldown_ms": 60000,
+     "max_agents": 10,
+     "hot_pair_min_count": 1
+    },
+    "limits": {
+     "max_pairs_exact": 100000,
+     "max_agents_exact": 50000,
+     "top_k": 10,
+     "candidates": 1024
+    },
+    "hash_seed": "default/smartwatch"
+   },
+   "ok": false,
+   "code": "WATCH-BAD-POLICY"
+  },
+  {
+   "name": "window 99 ms",
+   "policy": {
+    "schema": "smartwatch.policy/v1",
+    "environment": "default",
+    "window_ms": 99,
+    "late_windows": 2,
+    "max_empty_windows": 10,
+    "min_agents": 3,
+    "levels": [
+     {
+      "name": "elevated",
+      "min_density_micro": 2000000
+     },
+     {
+      "name": "high",
+      "min_density_micro": 5000000
+     },
+     {
+      "name": "critical",
+      "min_density_micro": 10000000
+     }
+    ],
+    "hysteresis_permille": 100,
+    "reset": {
+     "level": "critical",
+     "sustain_ms": 5000,
+     "mode": "confirm",
+     "confirm_timeout_ms": 5000,
+     "on_timeout": "reset",
+     "cooldown_ms": 60000,
+     "max_agents": 10,
+     "hot_pair_min_count": 1
+    },
+    "limits": {
+     "max_pairs_exact": 100000,
+     "max_agents_exact": 50000,
+     "top_k": 10,
+     "candidates": 1024
+    },
+    "hash_seed": "default/smartwatch"
+   },
+   "ok": false,
+   "code": "WATCH-BAD-POLICY"
+  },
+  {
+   "name": "window 60000 ms",
+   "policy": {
+    "schema": "smartwatch.policy/v1",
+    "environment": "default",
+    "window_ms": 60000,
+    "late_windows": 2,
+    "max_empty_windows": 10,
+    "min_agents": 3,
+    "levels": [
+     {
+      "name": "elevated",
+      "min_density_micro": 2000000
+     },
+     {
+      "name": "high",
+      "min_density_micro": 5000000
+     },
+     {
+      "name": "critical",
+      "min_density_micro": 10000000
+     }
+    ],
+    "hysteresis_permille": 100,
+    "reset": {
+     "level": "critical",
+     "sustain_ms": 5000,
+     "mode": "confirm",
+     "confirm_timeout_ms": 5000,
+     "on_timeout": "reset",
+     "cooldown_ms": 60000,
+     "max_agents": 10,
+     "hot_pair_min_count": 1
+    },
+    "limits": {
+     "max_pairs_exact": 100000,
+     "max_agents_exact": 50000,
+     "top_k": 10,
+     "candidates": 1024
+    },
+    "hash_seed": "default/smartwatch"
+   },
+   "ok": true
+  },
+  {
+   "name": "window 1000.5 ms",
+   "policy": {
+    "schema": "smartwatch.policy/v1",
+    "environment": "default",
+    "window_ms": 1000.5,
+    "late_windows": 2,
+    "max_empty_windows": 10,
+    "min_agents": 3,
+    "levels": [
+     {
+      "name": "elevated",
+      "min_density_micro": 2000000
+     },
+     {
+      "name": "high",
+      "min_density_micro": 5000000
+     },
+     {
+      "name": "critical",
+      "min_density_micro": 10000000
+     }
+    ],
+    "hysteresis_permille": 100,
+    "reset": {
+     "level": "critical",
+     "sustain_ms": 5000,
+     "mode": "confirm",
+     "confirm_timeout_ms": 5000,
+     "on_timeout": "reset",
+     "cooldown_ms": 60000,
+     "max_agents": 10,
+     "hot_pair_min_count": 1
+    },
+    "limits": {
+     "max_pairs_exact": 100000,
+     "max_agents_exact": 50000,
+     "top_k": 10,
+     "candidates": 1024
+    },
+    "hash_seed": "default/smartwatch"
+   },
+   "ok": false,
+   "code": "WATCH-BAD-POLICY"
+  },
+  {
+   "name": "window true",
+   "policy": {
+    "schema": "smartwatch.policy/v1",
+    "environment": "default",
+    "window_ms": true,
+    "late_windows": 2,
+    "max_empty_windows": 10,
+    "min_agents": 3,
+    "levels": [
+     {
+      "name": "elevated",
+      "min_density_micro": 2000000
+     },
+     {
+      "name": "high",
+      "min_density_micro": 5000000
+     },
+     {
+      "name": "critical",
+      "min_density_micro": 10000000
+     }
+    ],
+    "hysteresis_permille": 100,
+    "reset": {
+     "level": "critical",
+     "sustain_ms": 5000,
+     "mode": "confirm",
+     "confirm_timeout_ms": 5000,
+     "on_timeout": "reset",
+     "cooldown_ms": 60000,
+     "max_agents": 10,
+     "hot_pair_min_count": 1
+    },
+    "limits": {
+     "max_pairs_exact": 100000,
+     "max_agents_exact": 50000,
+     "top_k": 10,
+     "candidates": 1024
+    },
+    "hash_seed": "default/smartwatch"
+   },
+   "ok": false,
+   "code": "WATCH-BAD-POLICY"
+  },
+  {
+   "name": "levels not increasing",
+   "policy": {
+    "schema": "smartwatch.policy/v1",
+    "environment": "default",
+    "window_ms": 1000,
+    "late_windows": 2,
+    "max_empty_windows": 10,
+    "min_agents": 3,
+    "levels": [
+     {
+      "name": "elevated",
+      "min_density_micro": 2000000
+     },
+     {
+      "name": "high",
+      "min_density_micro": 2000000
+     },
+     {
+      "name": "critical",
+      "min_density_micro": 10000000
+     }
+    ],
+    "hysteresis_permille": 100,
+    "reset": {
+     "level": "critical",
+     "sustain_ms": 5000,
+     "mode": "confirm",
+     "confirm_timeout_ms": 5000,
+     "on_timeout": "reset",
+     "cooldown_ms": 60000,
+     "max_agents": 10,
+     "hot_pair_min_count": 1
+    },
+    "limits": {
+     "max_pairs_exact": 100000,
+     "max_agents_exact": 50000,
+     "top_k": 10,
+     "candidates": 1024
+    },
+    "hash_seed": "default/smartwatch"
+   },
+   "ok": false,
+   "code": "WATCH-BAD-POLICY"
+  },
+  {
+   "name": "level named normal",
+   "policy": {
+    "schema": "smartwatch.policy/v1",
+    "environment": "default",
+    "window_ms": 1000,
+    "late_windows": 2,
+    "max_empty_windows": 10,
+    "min_agents": 3,
+    "levels": [
+     {
+      "name": "normal",
+      "min_density_micro": 2000000
+     },
+     {
+      "name": "high",
+      "min_density_micro": 5000000
+     },
+     {
+      "name": "critical",
+      "min_density_micro": 10000000
+     }
+    ],
+    "hysteresis_permille": 100,
+    "reset": {
+     "level": "critical",
+     "sustain_ms": 5000,
+     "mode": "confirm",
+     "confirm_timeout_ms": 5000,
+     "on_timeout": "reset",
+     "cooldown_ms": 60000,
+     "max_agents": 10,
+     "hot_pair_min_count": 1
+    },
+    "limits": {
+     "max_pairs_exact": 100000,
+     "max_agents_exact": 50000,
+     "top_k": 10,
+     "candidates": 1024
+    },
+    "hash_seed": "default/smartwatch"
+   },
+   "ok": false,
+   "code": "WATCH-BAD-POLICY"
+  },
+  {
+   "name": "level name with a capital",
+   "policy": {
+    "schema": "smartwatch.policy/v1",
+    "environment": "default",
+    "window_ms": 1000,
+    "late_windows": 2,
+    "max_empty_windows": 10,
+    "min_agents": 3,
+    "levels": [
+     {
+      "name": "Elevated",
+      "min_density_micro": 2000000
+     },
+     {
+      "name": "high",
+      "min_density_micro": 5000000
+     },
+     {
+      "name": "critical",
+      "min_density_micro": 10000000
+     }
+    ],
+    "hysteresis_permille": 100,
+    "reset": {
+     "level": "critical",
+     "sustain_ms": 5000,
+     "mode": "confirm",
+     "confirm_timeout_ms": 5000,
+     "on_timeout": "reset",
+     "cooldown_ms": 60000,
+     "max_agents": 10,
+     "hot_pair_min_count": 1
+    },
+    "limits": {
+     "max_pairs_exact": 100000,
+     "max_agents_exact": 50000,
+     "top_k": 10,
+     "candidates": 1024
+    },
+    "hash_seed": "default/smartwatch"
+   },
+   "ok": false,
+   "code": "WATCH-BAD-POLICY"
+  },
+  {
+   "name": "duplicate level names",
+   "policy": {
+    "schema": "smartwatch.policy/v1",
+    "environment": "default",
+    "window_ms": 1000,
+    "late_windows": 2,
+    "max_empty_windows": 10,
+    "min_agents": 3,
+    "levels": [
+     {
+      "name": "elevated",
+      "min_density_micro": 2000000
+     },
+     {
+      "name": "elevated",
+      "min_density_micro": 5000000
+     },
+     {
+      "name": "critical",
+      "min_density_micro": 10000000
+     }
+    ],
+    "hysteresis_permille": 100,
+    "reset": {
+     "level": "critical",
+     "sustain_ms": 5000,
+     "mode": "confirm",
+     "confirm_timeout_ms": 5000,
+     "on_timeout": "reset",
+     "cooldown_ms": 60000,
+     "max_agents": 10,
+     "hot_pair_min_count": 1
+    },
+    "limits": {
+     "max_pairs_exact": 100000,
+     "max_agents_exact": 50000,
+     "top_k": 10,
+     "candidates": 1024
+    },
+    "hash_seed": "default/smartwatch"
+   },
+   "ok": false,
+   "code": "WATCH-BAD-POLICY"
+  },
+  {
+   "name": "threshold zero",
+   "policy": {
+    "schema": "smartwatch.policy/v1",
+    "environment": "default",
+    "window_ms": 1000,
+    "late_windows": 2,
+    "max_empty_windows": 10,
+    "min_agents": 3,
+    "levels": [
+     {
+      "name": "elevated",
+      "min_density_micro": 0
+     },
+     {
+      "name": "high",
+      "min_density_micro": 5000000
+     },
+     {
+      "name": "critical",
+      "min_density_micro": 10000000
+     }
+    ],
+    "hysteresis_permille": 100,
+    "reset": {
+     "level": "critical",
+     "sustain_ms": 5000,
+     "mode": "confirm",
+     "confirm_timeout_ms": 5000,
+     "on_timeout": "reset",
+     "cooldown_ms": 60000,
+     "max_agents": 10,
+     "hot_pair_min_count": 1
+    },
+    "limits": {
+     "max_pairs_exact": 100000,
+     "max_agents_exact": 50000,
+     "top_k": 10,
+     "candidates": 1024
+    },
+    "hash_seed": "default/smartwatch"
+   },
+   "ok": false,
+   "code": "WATCH-BAD-POLICY"
+  },
+  {
+   "name": "nine levels",
+   "policy": {
+    "schema": "smartwatch.policy/v1",
+    "environment": "default",
+    "window_ms": 1000,
+    "late_windows": 2,
+    "max_empty_windows": 10,
+    "min_agents": 3,
+    "levels": [
+     {
+      "name": "l0",
+      "min_density_micro": 1
+     },
+     {
+      "name": "l1",
+      "min_density_micro": 2
+     },
+     {
+      "name": "l2",
+      "min_density_micro": 3
+     },
+     {
+      "name": "l3",
+      "min_density_micro": 4
+     },
+     {
+      "name": "l4",
+      "min_density_micro": 5
+     },
+     {
+      "name": "l5",
+      "min_density_micro": 6
+     },
+     {
+      "name": "l6",
+      "min_density_micro": 7
+     },
+     {
+      "name": "l7",
+      "min_density_micro": 8
+     },
+     {
+      "name": "l8",
+      "min_density_micro": 9
+     }
+    ],
+    "hysteresis_permille": 100,
+    "reset": {
+     "level": "critical",
+     "sustain_ms": 5000,
+     "mode": "confirm",
+     "confirm_timeout_ms": 5000,
+     "on_timeout": "reset",
+     "cooldown_ms": 60000,
+     "max_agents": 10,
+     "hot_pair_min_count": 1
+    },
+    "limits": {
+     "max_pairs_exact": 100000,
+     "max_agents_exact": 50000,
+     "top_k": 10,
+     "candidates": 1024
+    },
+    "hash_seed": "default/smartwatch"
+   },
+   "ok": false,
+   "code": "WATCH-BAD-POLICY"
+  },
+  {
+   "name": "no levels",
+   "policy": {
+    "schema": "smartwatch.policy/v1",
+    "environment": "default",
+    "window_ms": 1000,
+    "late_windows": 2,
+    "max_empty_windows": 10,
+    "min_agents": 3,
+    "levels": [],
+    "hysteresis_permille": 100,
+    "reset": {
+     "level": "critical",
+     "sustain_ms": 5000,
+     "mode": "confirm",
+     "confirm_timeout_ms": 5000,
+     "on_timeout": "reset",
+     "cooldown_ms": 60000,
+     "max_agents": 10,
+     "hot_pair_min_count": 1
+    },
+    "limits": {
+     "max_pairs_exact": 100000,
+     "max_agents_exact": 50000,
+     "top_k": 10,
+     "candidates": 1024
+    },
+    "hash_seed": "default/smartwatch"
+   },
+   "ok": false,
+   "code": "WATCH-BAD-POLICY"
+  },
+  {
+   "name": "reset level unknown",
+   "policy": {
+    "schema": "smartwatch.policy/v1",
+    "environment": "default",
+    "window_ms": 1000,
+    "late_windows": 2,
+    "max_empty_windows": 10,
+    "min_agents": 3,
+    "levels": [
+     {
+      "name": "elevated",
+      "min_density_micro": 2000000
+     },
+     {
+      "name": "high",
+      "min_density_micro": 5000000
+     },
+     {
+      "name": "critical",
+      "min_density_micro": 10000000
+     }
+    ],
+    "hysteresis_permille": 100,
+    "reset": {
+     "level": "extreme",
+     "sustain_ms": 5000,
+     "mode": "confirm",
+     "confirm_timeout_ms": 5000,
+     "on_timeout": "reset",
+     "cooldown_ms": 60000,
+     "max_agents": 10,
+     "hot_pair_min_count": 1
+    },
+    "limits": {
+     "max_pairs_exact": 100000,
+     "max_agents_exact": 50000,
+     "top_k": 10,
+     "candidates": 1024
+    },
+    "hash_seed": "default/smartwatch"
+   },
+   "ok": false,
+   "code": "WATCH-BAD-POLICY"
+  },
+  {
+   "name": "reset level a list",
+   "policy": {
+    "schema": "smartwatch.policy/v1",
+    "environment": "default",
+    "window_ms": 1000,
+    "late_windows": 2,
+    "max_empty_windows": 10,
+    "min_agents": 3,
+    "levels": [
+     {
+      "name": "elevated",
+      "min_density_micro": 2000000
+     },
+     {
+      "name": "high",
+      "min_density_micro": 5000000
+     },
+     {
+      "name": "critical",
+      "min_density_micro": 10000000
+     }
+    ],
+    "hysteresis_permille": 100,
+    "reset": {
+     "level": [
+      "critical"
+     ],
+     "sustain_ms": 5000,
+     "mode": "confirm",
+     "confirm_timeout_ms": 5000,
+     "on_timeout": "reset",
+     "cooldown_ms": 60000,
+     "max_agents": 10,
+     "hot_pair_min_count": 1
+    },
+    "limits": {
+     "max_pairs_exact": 100000,
+     "max_agents_exact": 50000,
+     "top_k": 10,
+     "candidates": 1024
+    },
+    "hash_seed": "default/smartwatch"
+   },
+   "ok": false,
+   "code": "WATCH-BAD-POLICY"
+  },
+  {
+   "name": "reset mode unknown",
+   "policy": {
+    "schema": "smartwatch.policy/v1",
+    "environment": "default",
+    "window_ms": 1000,
+    "late_windows": 2,
+    "max_empty_windows": 10,
+    "min_agents": 3,
+    "levels": [
+     {
+      "name": "elevated",
+      "min_density_micro": 2000000
+     },
+     {
+      "name": "high",
+      "min_density_micro": 5000000
+     },
+     {
+      "name": "critical",
+      "min_density_micro": 10000000
+     }
+    ],
+    "hysteresis_permille": 100,
+    "reset": {
+     "level": "critical",
+     "sustain_ms": 5000,
+     "mode": "ask",
+     "confirm_timeout_ms": 5000,
+     "on_timeout": "reset",
+     "cooldown_ms": 60000,
+     "max_agents": 10,
+     "hot_pair_min_count": 1
+    },
+    "limits": {
+     "max_pairs_exact": 100000,
+     "max_agents_exact": 50000,
+     "top_k": 10,
+     "candidates": 1024
+    },
+    "hash_seed": "default/smartwatch"
+   },
+   "ok": false,
+   "code": "WATCH-BAD-POLICY"
+  },
+  {
+   "name": "reset on_timeout unknown",
+   "policy": {
+    "schema": "smartwatch.policy/v1",
+    "environment": "default",
+    "window_ms": 1000,
+    "late_windows": 2,
+    "max_empty_windows": 10,
+    "min_agents": 3,
+    "levels": [
+     {
+      "name": "elevated",
+      "min_density_micro": 2000000
+     },
+     {
+      "name": "high",
+      "min_density_micro": 5000000
+     },
+     {
+      "name": "critical",
+      "min_density_micro": 10000000
+     }
+    ],
+    "hysteresis_permille": 100,
+    "reset": {
+     "level": "critical",
+     "sustain_ms": 5000,
+     "mode": "confirm",
+     "confirm_timeout_ms": 5000,
+     "on_timeout": "wait",
+     "cooldown_ms": 60000,
+     "max_agents": 10,
+     "hot_pair_min_count": 1
+    },
+    "limits": {
+     "max_pairs_exact": 100000,
+     "max_agents_exact": 50000,
+     "top_k": 10,
+     "candidates": 1024
+    },
+    "hash_seed": "default/smartwatch"
+   },
+   "ok": false,
+   "code": "WATCH-BAD-POLICY"
+  },
+  {
+   "name": "reset max_agents 0",
+   "policy": {
+    "schema": "smartwatch.policy/v1",
+    "environment": "default",
+    "window_ms": 1000,
+    "late_windows": 2,
+    "max_empty_windows": 10,
+    "min_agents": 3,
+    "levels": [
+     {
+      "name": "elevated",
+      "min_density_micro": 2000000
+     },
+     {
+      "name": "high",
+      "min_density_micro": 5000000
+     },
+     {
+      "name": "critical",
+      "min_density_micro": 10000000
+     }
+    ],
+    "hysteresis_permille": 100,
+    "reset": {
+     "level": "critical",
+     "sustain_ms": 5000,
+     "mode": "confirm",
+     "confirm_timeout_ms": 5000,
+     "on_timeout": "reset",
+     "cooldown_ms": 60000,
+     "max_agents": 0,
+     "hot_pair_min_count": 1
+    },
+    "limits": {
+     "max_pairs_exact": 100000,
+     "max_agents_exact": 50000,
+     "top_k": 10,
+     "candidates": 1024
+    },
+    "hash_seed": "default/smartwatch"
+   },
+   "ok": false,
+   "code": "WATCH-BAD-POLICY"
+  },
+  {
+   "name": "reset extra field",
+   "policy": {
+    "schema": "smartwatch.policy/v1",
+    "environment": "default",
+    "window_ms": 1000,
+    "late_windows": 2,
+    "max_empty_windows": 10,
+    "min_agents": 3,
+    "levels": [
+     {
+      "name": "elevated",
+      "min_density_micro": 2000000
+     },
+     {
+      "name": "high",
+      "min_density_micro": 5000000
+     },
+     {
+      "name": "critical",
+      "min_density_micro": 10000000
+     }
+    ],
+    "hysteresis_permille": 100,
+    "reset": {
+     "level": "critical",
+     "sustain_ms": 5000,
+     "mode": "confirm",
+     "confirm_timeout_ms": 5000,
+     "on_timeout": "reset",
+     "cooldown_ms": 60000,
+     "max_agents": 10,
+     "hot_pair_min_count": 1,
+     "x": 1
+    },
+    "limits": {
+     "max_pairs_exact": 100000,
+     "max_agents_exact": 50000,
+     "top_k": 10,
+     "candidates": 1024
+    },
+    "hash_seed": "default/smartwatch"
+   },
+   "ok": false,
+   "code": "WATCH-BAD-POLICY"
+  },
+  {
+   "name": "hysteresis 901",
+   "policy": {
+    "schema": "smartwatch.policy/v1",
+    "environment": "default",
+    "window_ms": 1000,
+    "late_windows": 2,
+    "max_empty_windows": 10,
+    "min_agents": 3,
+    "levels": [
+     {
+      "name": "elevated",
+      "min_density_micro": 2000000
+     },
+     {
+      "name": "high",
+      "min_density_micro": 5000000
+     },
+     {
+      "name": "critical",
+      "min_density_micro": 10000000
+     }
+    ],
+    "hysteresis_permille": 901,
+    "reset": {
+     "level": "critical",
+     "sustain_ms": 5000,
+     "mode": "confirm",
+     "confirm_timeout_ms": 5000,
+     "on_timeout": "reset",
+     "cooldown_ms": 60000,
+     "max_agents": 10,
+     "hot_pair_min_count": 1
+    },
+    "limits": {
+     "max_pairs_exact": 100000,
+     "max_agents_exact": 50000,
+     "top_k": 10,
+     "candidates": 1024
+    },
+    "hash_seed": "default/smartwatch"
+   },
+   "ok": false,
+   "code": "WATCH-BAD-POLICY"
+  },
+  {
+   "name": "min_agents 1",
+   "policy": {
+    "schema": "smartwatch.policy/v1",
+    "environment": "default",
+    "window_ms": 1000,
+    "late_windows": 2,
+    "max_empty_windows": 10,
+    "min_agents": 1,
+    "levels": [
+     {
+      "name": "elevated",
+      "min_density_micro": 2000000
+     },
+     {
+      "name": "high",
+      "min_density_micro": 5000000
+     },
+     {
+      "name": "critical",
+      "min_density_micro": 10000000
+     }
+    ],
+    "hysteresis_permille": 100,
+    "reset": {
+     "level": "critical",
+     "sustain_ms": 5000,
+     "mode": "confirm",
+     "confirm_timeout_ms": 5000,
+     "on_timeout": "reset",
+     "cooldown_ms": 60000,
+     "max_agents": 10,
+     "hot_pair_min_count": 1
+    },
+    "limits": {
+     "max_pairs_exact": 100000,
+     "max_agents_exact": 50000,
+     "top_k": 10,
+     "candidates": 1024
+    },
+    "hash_seed": "default/smartwatch"
+   },
+   "ok": false,
+   "code": "WATCH-BAD-POLICY"
+  },
+  {
+   "name": "environment with a space",
+   "policy": {
+    "schema": "smartwatch.policy/v1",
+    "environment": "prod eu",
+    "window_ms": 1000,
+    "late_windows": 2,
+    "max_empty_windows": 10,
+    "min_agents": 3,
+    "levels": [
+     {
+      "name": "elevated",
+      "min_density_micro": 2000000
+     },
+     {
+      "name": "high",
+      "min_density_micro": 5000000
+     },
+     {
+      "name": "critical",
+      "min_density_micro": 10000000
+     }
+    ],
+    "hysteresis_permille": 100,
+    "reset": {
+     "level": "critical",
+     "sustain_ms": 5000,
+     "mode": "confirm",
+     "confirm_timeout_ms": 5000,
+     "on_timeout": "reset",
+     "cooldown_ms": 60000,
+     "max_agents": 10,
+     "hot_pair_min_count": 1
+    },
+    "limits": {
+     "max_pairs_exact": 100000,
+     "max_agents_exact": 50000,
+     "top_k": 10,
+     "candidates": 1024
+    },
+    "hash_seed": "default/smartwatch"
+   },
+   "ok": false,
+   "code": "WATCH-BAD-POLICY"
+  },
+  {
+   "name": "top_k 101",
+   "policy": {
+    "schema": "smartwatch.policy/v1",
+    "environment": "default",
+    "window_ms": 1000,
+    "late_windows": 2,
+    "max_empty_windows": 10,
+    "min_agents": 3,
+    "levels": [
+     {
+      "name": "elevated",
+      "min_density_micro": 2000000
+     },
+     {
+      "name": "high",
+      "min_density_micro": 5000000
+     },
+     {
+      "name": "critical",
+      "min_density_micro": 10000000
+     }
+    ],
+    "hysteresis_permille": 100,
+    "reset": {
+     "level": "critical",
+     "sustain_ms": 5000,
+     "mode": "confirm",
+     "confirm_timeout_ms": 5000,
+     "on_timeout": "reset",
+     "cooldown_ms": 60000,
+     "max_agents": 10,
+     "hot_pair_min_count": 1
+    },
+    "limits": {
+     "max_pairs_exact": 100000,
+     "max_agents_exact": 50000,
+     "top_k": 101,
+     "candidates": 1024
+    },
+    "hash_seed": "default/smartwatch"
+   },
+   "ok": false,
+   "code": "WATCH-BAD-POLICY"
+  },
+  {
+   "name": "hash seed empty",
+   "policy": {
+    "schema": "smartwatch.policy/v1",
+    "environment": "default",
+    "window_ms": 1000,
+    "late_windows": 2,
+    "max_empty_windows": 10,
+    "min_agents": 3,
+    "levels": [
+     {
+      "name": "elevated",
+      "min_density_micro": 2000000
+     },
+     {
+      "name": "high",
+      "min_density_micro": 5000000
+     },
+     {
+      "name": "critical",
+      "min_density_micro": 10000000
+     }
+    ],
+    "hysteresis_permille": 100,
+    "reset": {
+     "level": "critical",
+     "sustain_ms": 5000,
+     "mode": "confirm",
+     "confirm_timeout_ms": 5000,
+     "on_timeout": "reset",
+     "cooldown_ms": 60000,
+     "max_agents": 10,
+     "hot_pair_min_count": 1
+    },
+    "limits": {
+     "max_pairs_exact": 100000,
+     "max_agents_exact": 50000,
+     "top_k": 10,
+     "candidates": 1024
+    },
+    "hash_seed": ""
+   },
+   "ok": false,
+   "code": "WATCH-BAD-POLICY"
+  },
+  {
+   "name": "hash seed of 256 bytes",
+   "policy": {
+    "schema": "smartwatch.policy/v1",
+    "environment": "default",
+    "window_ms": 1000,
+    "late_windows": 2,
+    "max_empty_windows": 10,
+    "min_agents": 3,
+    "levels": [
+     {
+      "name": "elevated",
+      "min_density_micro": 2000000
+     },
+     {
+      "name": "high",
+      "min_density_micro": 5000000
+     },
+     {
+      "name": "critical",
+      "min_density_micro": 10000000
+     }
+    ],
+    "hysteresis_permille": 100,
+    "reset": {
+     "level": "critical",
+     "sustain_ms": 5000,
+     "mode": "confirm",
+     "confirm_timeout_ms": 5000,
+     "on_timeout": "reset",
+     "cooldown_ms": 60000,
+     "max_agents": 10,
+     "hot_pair_min_count": 1
+    },
+    "limits": {
+     "max_pairs_exact": 100000,
+     "max_agents_exact": 50000,
+     "top_k": 10,
+     "candidates": 1024
+    },
+    "hash_seed": "\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9"
+   },
+   "ok": true
+  },
+  {
+   "name": "hash seed of 258 bytes",
+   "policy": {
+    "schema": "smartwatch.policy/v1",
+    "environment": "default",
+    "window_ms": 1000,
+    "late_windows": 2,
+    "max_empty_windows": 10,
+    "min_agents": 3,
+    "levels": [
+     {
+      "name": "elevated",
+      "min_density_micro": 2000000
+     },
+     {
+      "name": "high",
+      "min_density_micro": 5000000
+     },
+     {
+      "name": "critical",
+      "min_density_micro": 10000000
+     }
+    ],
+    "hysteresis_permille": 100,
+    "reset": {
+     "level": "critical",
+     "sustain_ms": 5000,
+     "mode": "confirm",
+     "confirm_timeout_ms": 5000,
+     "on_timeout": "reset",
+     "cooldown_ms": 60000,
+     "max_agents": 10,
+     "hot_pair_min_count": 1
+    },
+    "limits": {
+     "max_pairs_exact": 100000,
+     "max_agents_exact": 50000,
+     "top_k": 10,
+     "candidates": 1024
+    },
+    "hash_seed": "\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9"
+   },
+   "ok": false,
+   "code": "WATCH-BAD-POLICY"
+  },
+  {
+   "name": "not an object",
+   "policy": [
+    "smartwatch.policy/v1"
+   ],
+   "ok": false,
+   "code": "WATCH-BAD-POLICY"
+  }
+ ]
+}
