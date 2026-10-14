@@ -1,0 +1,110 @@
+{
+ "description": "canonical(input) equals \"canonical\" byte for byte; sha256 of its UTF-8 bytes",
+ "cases": [
+  {
+   "name": "empty object",
+   "input": {},
+   "canonical": "{}",
+   "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  {
+   "name": "empty array",
+   "input": [],
+   "canonical": "[]",
+   "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+  },
+  {
+   "name": "null",
+   "input": null,
+   "canonical": "null",
+   "sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+  },
+  {
+   "name": "true",
+   "input": true,
+   "canonical": "true",
+   "sha256": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b"
+  },
+  {
+   "name": "false",
+   "input": false,
+   "canonical": "false",
+   "sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa"
+  },
+  {
+   "name": "zero",
+   "input": 0,
+   "canonical": "0",
+   "sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+  },
+  {
+   "name": "negative",
+   "input": -42,
+   "canonical": "-42",
+   "sha256": "fec80006df0542549b4cbaafb8987eee00bb49bca396eefe9ac8be5b5928e8f6"
+  },
+  {
+   "name": "max safe integer",
+   "input": 9007199254740991,
+   "canonical": "9007199254740991",
+   "sha256": "f40b423c2dd95ff2b2f027e22208f438cf7242862e5e746860e697308c9add26"
+  },
+  {
+   "name": "sorted keys",
+   "input": {
+    "b": 1,
+    "a": 2,
+    "B": 3,
+    "_": 4,
+    "a1": 5,
+    "a0": 6
+   },
+   "canonical": "{\"B\":3,\"_\":4,\"a\":2,\"a0\":6,\"a1\":5,\"b\":1}",
+   "sha256": "caf65ad14c9e302f6f7ef62540c7a7bf2d405a69079d2302562c8ab9328f87ee"
+  },
+  {
+   "name": "nested",
+   "input": {
+    "z": [
+     1,
+     {
+      "y": null,
+      "x": [
+       true,
+       false
+      ]
+     }
+    ],
+    "a": {
+     "c": "d"
+    }
+   },
+   "canonical": "{\"a\":{\"c\":\"d\"},\"z\":[1,{\"x\":[true,false],\"y\":null}]}",
+   "sha256": "4e7827213b8181e4d8d802dca1cfa12acb577341863e1bfdeab88545b5f67309"
+  },
+  {
+   "name": "escapes",
+   "input": "quote \" backslash \\ slash / bs \b ff \f nl \n cr \r tab \t",
+   "canonical": "\"quote \\\" backslash \\\\ slash / bs \\b ff \\f nl \\n cr \\r tab \\t\"",
+   "sha256": "c7f57b16373569ea266f2570da62883a0dd7af69cb5bef71ff68509dc2a2033d"
+  },
+  {
+   "name": "control characters",
+   "input": "\u0000\u0001\u001f\u007f",
+   "canonical": "\"\\u0000\\u0001\\u001f\u007f\"",
+   "sha256": "3a5f25746de9e33a0a1d8d04f3bb8e3cc03c04b69fbe67fdbc4091e2b3c48fa8"
+  },
+  {
+   "name": "non-ASCII as is",
+   "input": "\u00fc \u6f22\u5b57 \ud83d\ude42 \u2028 \u2029",
+   "canonical": "\"\u00fc \u6f22\u5b57 \ud83d\ude42 \u2028 \u2029\"",
+   "sha256": "5d48803ee8197f021905d3f5838eb3656868fe13b17f64642a756d7fb66a8a2d"
+  },
+  {
+   "name": "empty string",
+   "input": "",
+   "canonical": "\"\"",
+   "sha256": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126"
+  }
+ ]
+}

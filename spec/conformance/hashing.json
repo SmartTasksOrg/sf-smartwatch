@@ -1,0 +1,85 @@
+{
+ "description": "fnv1a32/fnv1a64 over UTF-8(seed) + 0x00 + UTF-8(text); 64-bit values as decimal strings; mix64 = MurmurHash3 fmix64 of fnv1a64; bucket = fnv1a32 mod 2^20",
+ "cases": [
+  {
+   "seed": "",
+   "text": "",
+   "fnv1a32": 84696351,
+   "fnv1a64": "12638153115695167455",
+   "mix64": "13331581593930102267",
+   "bucket": 810271
+  },
+  {
+   "seed": "",
+   "text": "a",
+   "fnv1a32": 1886858586,
+   "fnv1a64": "590647783936702426",
+   "mix64": "6980058099257063764",
+   "bucket": 470362
+  },
+  {
+   "seed": "a",
+   "text": "",
+   "fnv1a32": 723832900,
+   "fnv1a64": "620337896427418084",
+   "mix64": "9726698790539242981",
+   "bucket": 315460
+  },
+  {
+   "seed": "default/smartwatch",
+   "text": "planner\ncoder",
+   "fnv1a32": 1867530296,
+   "fnv1a64": "5150607415606879160",
+   "mix64": "14763395664955671668",
+   "bucket": 16440
+  },
+  {
+   "seed": "prod/pod-7",
+   "text": "a\nb",
+   "fnv1a32": 1007941627,
+   "fnv1a64": "6966491566188987099",
+   "mix64": "12085055400529614037",
+   "bucket": 260091
+  },
+  {
+   "seed": "ns/pod",
+   "text": "agent-0",
+   "fnv1a32": 2791521350,
+   "fnv1a64": "8561301041341258502",
+   "mix64": "8116298707108780716",
+   "bucket": 212038
+  },
+  {
+   "seed": "ns/pod",
+   "text": "agent-1",
+   "fnv1a32": 2808298969,
+   "fnv1a64": "8561302140852886713",
+   "mix64": "16074272281243050561",
+   "bucket": 212441
+  },
+  {
+   "seed": "ns/pod",
+   "text": "\u00fc\u00f1\u00ed/\u6f22\u5b57",
+   "fnv1a32": 1133951949,
+   "fnv1a64": "14777833594183431821",
+   "mix64": "9102863746427897954",
+   "bucket": 441293
+  },
+  {
+   "seed": "seed",
+   "text": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+   "fnv1a32": 4087877764,
+   "fnv1a64": "18432594118838474884",
+   "mix64": "3709129769862596444",
+   "bucket": 528516
+  },
+  {
+   "seed": "\ud83d\ude42",
+   "text": "\u0000",
+   "fnv1a32": 4041926339,
+   "fnv1a64": "7778288130029174531",
+   "mix64": "7213989089077210489",
+   "bucket": 714435
+  }
+ ]
+}

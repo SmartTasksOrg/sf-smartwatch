@@ -1,0 +1,11 @@
+{
+    "name": "smarttasksorg/sf-smartwatch",
+    "description": "SmartWatch for PHP: the coupling-density engine, a reporter and a command poller for the Python monitor. Not published on Packagist; use it from a clone.",
+    "type": "library",
+    "license": "Apache-2.0",
+    "require": {
+        "php": ">=8.1",
+        "ext-json": "*"
+    },
+    "autoload": { "files": ["src/SmartWatch.php"] }
+}

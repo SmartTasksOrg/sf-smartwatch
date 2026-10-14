@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "repo": "SmartTasksOrg/sf-smartwatch",
+  "checked_on": "2026-10-14",
+  "names": [
+    {
+      "registry": "pypi",
+      "name": "sf-smartwatch",
+      "registered": true,
+      "workflow": "release.yml",
+      "note": "first release 0.1.0 is published from this repository by release.yml (tag v0.1.0, PyPI trusted publishing, provenance attestations); README 'Install' says to use a clone until it is on PyPI"
+    },
+    {
+      "registry": "pypi",
+      "name": "smartwatch",
+      "registered": false,
+      "note": "not used by the family: packages are published as sf-<name>; never install this name"
+    },
+    {
+      "registry": "npm",
+      "name": "sf-smartwatch",
+      "registered": false,
+      "note": "the Node port (ports/node); package.json is private, never published"
+    },
+    {
+      "registry": "go",
+      "name": "github.com/SmartTasksOrg/sf-smartwatch/ports/go",
+      "registered": false,
+      "note": "the Go port's module path (this repository); no Go release tagged"
+    },
+    {
+      "registry": "crates",
+      "name": "sf-smartwatch",
+      "registered": false,
+      "note": "the Rust port; publish = false"
+    },
+    {
+      "registry": "maven",
+      "name": "cloud.smarttasks:sf-smartwatch",
+      "registered": false,
+      "note": "the Java port; not published"
+    },
+    {
+      "registry": "nuget",
+      "name": "SfSmartWatch",
+      "registered": false,
+      "note": "the .NET port; IsPackable false"
+    },
+    {
+      "registry": "packagist",
+      "name": "smarttasksorg/sf-smartwatch",
+      "registered": false,
+      "note": "the PHP port; not published"
+    },
+    {
+      "registry": "rubygems",
+      "name": "sf-smartwatch",
+      "registered": false,
+      "note": "the Ruby port; gem push refused by allowed_push_host"
+    }
+  ],
+  "third_party": {
+    "pypi": [
+      "pip",
+      "build",
+      "pytest",
+      "cryptography"
+    ]
+  }
+}

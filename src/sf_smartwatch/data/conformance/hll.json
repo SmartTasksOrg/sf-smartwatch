@@ -1,0 +1,89 @@
+{
+ "description": "add every item (expand {\"prefix\",\"from\",\"to\"} to prefix + decimal i) to a new p=14 HyperLogLog with this seed; estimate and the sha256 of the 16,384 registers must match",
+ "cases": [
+  {
+   "name": "empty",
+   "seed": "ns/pod",
+   "items": [],
+   "estimate": 0,
+   "digest": "4fe7b59af6de3b665b67788cc2f99892ab827efae3a467342b3bb4e3bc8e5bfe"
+  },
+  {
+   "name": "one",
+   "seed": "ns/pod",
+   "items": [
+    "a"
+   ],
+   "estimate": 1,
+   "digest": "6168a0e3c29f12294d2f1829a76f4388780f7cac5145eeba92c4d2bd983152d7"
+  },
+  {
+   "name": "ten",
+   "seed": "ns/pod",
+   "items": {
+    "prefix": "agent-",
+    "from": 0,
+    "to": 10
+   },
+   "estimate": 10,
+   "digest": "dfab061a19253d0aaaeb464359aafa6da8ecdf0ca5204dccf892160297affc1b"
+  },
+  {
+   "name": "duplicates count once",
+   "seed": "ns/pod",
+   "items": [
+    "a",
+    "b",
+    "a",
+    "b",
+    "a"
+   ],
+   "estimate": 2,
+   "digest": "fecb5a3defc20bff2e4e7252084155c976ffc32fc3507c5ea609710ec1113cbf"
+  },
+  {
+   "name": "1,000 (linear counting)",
+   "seed": "ns/pod",
+   "items": {
+    "prefix": "agent-",
+    "from": 0,
+    "to": 1000
+   },
+   "estimate": 1006,
+   "digest": "9e16eb931f84309f55713ea821af874497a60d52ab6d32bd566b8f4d63a21d1c"
+  },
+  {
+   "name": "20,000 (raw estimate)",
+   "seed": "ns/pod",
+   "items": {
+    "prefix": "agent-",
+    "from": 0,
+    "to": 20000
+   },
+   "estimate": 20118,
+   "digest": "e4d6de588b5328eed90cae9c0cdace32a0bf7f305007c8e665637f56bde8d8f4"
+  },
+  {
+   "name": "100,000 pairs",
+   "seed": "prod/pod-7",
+   "items": {
+    "prefix": "x\ny",
+    "from": 0,
+    "to": 100000
+   },
+   "estimate": 98722,
+   "digest": "ebc480ef7125ba0d4c295965fa160e43a7358981d48235179aee594b35090a5e"
+  },
+  {
+   "name": "another seed",
+   "seed": "staging/pod-2",
+   "items": {
+    "prefix": "agent-",
+    "from": 0,
+    "to": 20000
+   },
+   "estimate": 19904,
+   "digest": "1b1bdce977323efb92bca8c05176f6833093ea9f3bd6399c02d42023019b14c1"
+  }
+ ]
+}

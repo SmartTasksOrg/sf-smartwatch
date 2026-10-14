@@ -1,0 +1,12 @@
+{
+  "name": "sf-smartwatch",
+  "version": "0.1.0",
+  "private": true,
+  "description": "SmartWatch engine and agent side for Node.js: coupling density per window, levels and reset decisions, plus the reporter and command poller for the Python monitor. Not published on npm; use it from a clone.",
+  "license": "Apache-2.0",
+  "main": "src/index.js",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "test": "node test/conformance.js && node test/client.js"
+  }
+}

@@ -1,0 +1,33 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+.pytest_cache/
+# secrets and local configuration: never commit
+.env
+.env.*
+!.env.example
+deploy/.env
+deploy/keys/
+*.key
+*.p12
+id_*
+secrets.env
+.npmrc
+.pypirc
+.netrc
+*.pem
+# logs and exports written by local runs
+*.jsonl
+deploy/failure/out/
+# ports
+ports/node/node_modules/
+ports/rust/target/
+ports/java/build/
+ports/java/target/
+ports/csharp/**/bin/
+ports/csharp/**/obj/
+ports/php/vendor/
+deploy/policy.json
